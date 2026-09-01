@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lingerie By GK — Exclusive Lingerie Collections</title>
+  <meta name="description" content="Exclusive lingerie collections. Embrace your passionate moments. Shipping to Macedonia, Kosovo & Albania.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Preloader -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-logo">
+        <div class="logo-mark logo-mark--lg">
+          <svg class="logo-ring" viewBox="0 0 80 80" fill="none">
+            <circle cx="40" cy="40" r="38" stroke="url(#logoGrad)" stroke-width="1.5"/>
+            <defs>
+              <linearGradient id="logoGrad" x1="0" y1="0" x2="80" y2="80">
+                <stop offset="0%" stop-color="#C9A84C"/>
+                <stop offset="100%" stop-color="#9B0E22"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <span class="logo-letters">GK</span>
+        </div>
+        <p class="preloader-brand">Lingerie By GK</p>
+      </div>
+      <div class="preloader-bar">
+        <div class="preloader-progress" id="preloaderProgress"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="site" id="site">
+
+    <!-- Announcement Bar -->
+    <div class="announcement-bar">
+      <p>Free shipping on orders over €120 &nbsp;·&nbsp; Dërgesa në: Maqedoni, Kosovë, Shqipëri</p>
+    </div>
+
+    <!-- Header -->
+    <header class="header" id="header">
+      <div class="header-inner">
+        <a href="#" class="logo">
+          <div class="logo-mark">
+            <svg class="logo-ring" viewBox="0 0 80 80" fill="none">
+              <circle cx="40" cy="40" r="38" stroke="url(#logoGradHeader)" stroke-width="1.5"/>
+              <defs>
+                <linearGradient id="logoGradHeader" x1="0" y1="0" x2="80" y2="80">
+                  <stop offset="0%" stop-color="#C9A84C"/>
+                  <stop offset="100%" stop-color="#9B0E22"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <span class="logo-letters">GK</span>
+          </div>
+          <div class="logo-wordmark">
+            <span class="logo-name">Lingerie By GK</span>
+            <span class="logo-tag">Exclusive Collections</span>
+          </div>
+        </a>
+        <nav class="nav" id="nav">
+          <a href="#collection" class="nav-link">Shop</a>
+          <a href="#about" class="nav-link">About</a>
+          <a href="#contact" class="nav-link">Contact</a>
+        </nav>
+        <div class="header-actions">
+          <button class="cart-btn" id="cartBtn" aria-label="Open cart">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 01-8 0"/>
+            </svg>
+            <span class="cart-count" id="cartCount">0</span>
+          </button>
+          <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <video class="hero-video" autoplay muted loop playsinline poster="images/p2.png">
+        <source src="lig.mp4" type="video/mp4">
+      </video>
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <p class="hero-tagline">Exclusive Lingerie Collections</p>
+        <h1 class="hero-title">Embrace Your<br><em>Passionate Moments</em></h1>
+        <p class="hero-sub">Curated pieces for confidence, elegance, and desire.</p>
+        <a href="#collection" class="btn btn-hero">Shop Collection</a>
+      </div>
+      <a href="#collection" class="hero-scroll" aria-label="Scroll to collection">
+        <span>Scroll</span>
+        <div class="hero-scroll-line"></div>
+      </a>
+    </section>
+
+    <!-- Collection -->
+    <section class="collection" id="collection">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-label">Shop All</span>
+          <h2 class="section-title">The Collection</h2>
+          <p class="section-desc">Handpicked pieces designed to make you feel confident, elegant, and irresistibly you.</p>
+        </div>
+        <div class="product-grid" id="productGrid"></div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+      <div class="container">
+        <div class="features-grid">
+          <div class="feature reveal">
+            <div class="feature-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <h3>Premium Quality</h3>
+            <p>Luxurious fabrics and meticulous craftsmanship in every piece.</p>
+          </div>
+          <div class="feature reveal">
+            <div class="feature-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+            </div>
+            <h3>Discreet Packaging</h3>
+            <p>Elegant, unmarked packaging for complete privacy.</p>
+          </div>
+          <div class="feature reveal">
+            <div class="feature-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            </div>
+            <h3>Made With Love</h3>
+            <p>Every collection curated with passion and attention to detail.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="about" id="about">
+      <div class="container about-inner">
+        <div class="about-visual reveal">
+          <img src="images/p4.png" alt="Lingerie By GK collection" loading="lazy">
+          <div class="about-badge">
+            <span class="badge-number">11K+</span>
+            <span class="badge-label">Instagram Followers</span>
+          </div>
+        </div>
+        <div class="about-content reveal">
+          <span class="section-label">About Us</span>
+          <h2 class="section-title">Lingerie By GK</h2>
+          <p>We believe every woman deserves to feel beautiful, confident, and empowered. Our exclusive lingerie collections are designed for those who embrace their passionate moments without compromise.</p>
+          <p>From intricate lace sets to bold statement pieces, each item celebrates femininity and sensuality with elegance.</p>
+          <div class="about-shipping">
+            <strong>We ship to</strong>
+            <div class="shipping-tags">
+              <span>Macedonia</span>
+              <span>Kosovo</span>
+              <span>Albania</span>
+            </div>
+          </div>
+          <a href="https://instagram.com/lingerie_by.gk" target="_blank" rel="noopener" class="btn btn-outline">Follow @lingerie_by.gk</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="contact" id="contact">
+      <div class="container">
+        <div class="contact-inner reveal">
+          <span class="section-label">Get In Touch</span>
+          <h2 class="section-title">Contact Us</h2>
+          <p class="section-desc">Questions about sizing, orders, or custom requests? We'd love to hear from you.</p>
+          <form class="contact-form" id="contactForm">
+            <div class="form-row">
+              <input type="text" name="name" placeholder="Your Name" required>
+              <input type="email" name="email" placeholder="Your Email" required>
+            </div>
+            <textarea name="message" placeholder="Your Message" rows="4" required></textarea>
+            <button type="submit" class="btn btn-primary">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container footer-inner">
+        <a href="#" class="logo logo--footer">
+          <div class="logo-mark logo-mark--sm">
+            <span class="logo-letters">GK</span>
+          </div>
+          <div class="logo-wordmark">
+            <span class="logo-name">Lingerie By GK</span>
+            <span class="logo-tag">Exclusive Collections</span>
+          </div>
+        </a>
+        <div class="footer-links">
+          <a href="#collection">Shop</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+          <a href="https://instagram.com/lingerie_by.gk" target="_blank" rel="noopener">Instagram</a>
+        </div>
+        <p class="footer-copy">&copy; 2026 Lingerie By GK. All rights reserved.</p>
+      </div>
+    </footer>
+
+  </div><!-- /.site -->
+
+  <!-- Product Modal -->
+  <div class="modal" id="productModal" aria-hidden="true">
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- Cart Drawer -->
+  <div class="cart-drawer" id="cartDrawer" aria-hidden="true">
+    <div class="cart-backdrop" id="cartBackdrop"></div>
+    <div class="cart-panel">
+      <div class="cart-header">
+        <h3>Shopping Bag</h3>
+        <button class="cart-close" id="cartClose" aria-label="Close cart">&times;</button>
+      </div>
+      <div class="cart-items" id="cartItems"></div>
+      <div class="cart-footer" id="cartFooter">
+        <div class="cart-total">
+          <span>Total</span>
+          <span id="cartTotal">€0.00</span>
+        </div>
+        <button class="btn btn-primary btn-full" id="checkoutBtn">Checkout</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
