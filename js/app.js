@@ -1,630 +1,302 @@
+const WA_NUMBER = "38971643726";
+const CART_KEY = "maya_cart_v1";
+
 const products = [
   {
     id: 1,
-    name: 'Midnight Lace Garter Set',
-    color: 'Black',
-    price: 89,
-    image: 'images/p1.png',
-    imageAlt: 'images/p1.1.png',
-    badge: 'Bestseller',
-    description: 'An intricate black lace bra with sheer mesh panels, paired with a high-waisted garter belt featuring gold-toned hardware. Includes matching lace thong and adjustable thigh straps for a complete seductive look.',
-    sizes: ['S', 'M', 'L', 'XL']
+    name: "Бордо фустан со чипка",
+    color: "Бордо / вино",
+    price: 1599,
+    badge: "Ново",
+    image: "images/dress-1.png",
+    description: "Елегантен долг фустан со цветна чипка и детаљ на колкот. Идеален за вечерни излегувања.",
+    sizes: ["S", "M", "L", "XL"]
   },
   {
     id: 2,
-    name: 'Passion Red Floral Set',
-    color: 'Red',
-    price: 95,
-    image: 'images/p2.png',
-    imageAlt: 'images/p2.2.png',
-    badge: 'New',
-    description: 'A stunning five-piece red lace collection featuring an underwire bra, high-waisted garter belt, thong, fingerless lace gloves, and satin thigh garters with gold ring hardware. Pure passion in every detail.',
-    sizes: ['S', 'M', 'L', 'XL']
+    name: "Светлосин фустан со набори",
+    color: "Светлосина",
+    price: 1499,
+    badge: null,
+    image: "images/dress-2.png",
+    description: "Модерен фустан со висок врат и вертикални набори. Чист силует за свечени пригоди.",
+    sizes: ["S", "M", "L", "XL"]
   },
   {
     id: 3,
-    name: 'Ivory Feather Collection',
-    color: 'White',
-    price: 110,
-    image: 'images/p3.png',
-    imageAlt: null,
+    name: "Кафеав фустан со точки",
+    color: "Кафеава со бели точки",
+    price: 1399,
     badge: null,
-    description: 'Ethereal white lace lingerie with high-waisted panty, integrated garter straps with gold hardware, and triple-banded thigh straps. Paired with a luxurious white feather boa for an unforgettable entrance.',
-    sizes: ['S', 'M', 'L']
+    image: "images/dress-3.png",
+    description: "Ретро макси фустан со точки, квадратен изрез и полна здолниште. Класичен Maya стил.",
+    sizes: ["S", "M", "L", "XL"]
   },
   {
     id: 4,
-    name: 'Crimson Embroidered Set',
-    color: 'Red',
-    price: 99,
-    image: 'images/p4.png',
-    imageAlt: null,
-    badge: 'Popular',
-    description: 'Vibrant cherry-red mesh lingerie adorned with intricate floral embroidery. Features an underwire bra, high-waisted bottoms with decorative thigh straps, and matching elbow-length lace gloves.',
-    sizes: ['S', 'M', 'L', 'XL']
+    name: "Цветен макси фустан",
+    color: "Цветен принт",
+    price: 1699,
+    badge: "Популарен",
+    image: "images/dress-4.png",
+    description: "Долг халтер фустан со цветен дезен. Лесен крој со прорез — за лето и прослави.",
+    sizes: ["S", "M", "L", "XL"]
+  },
+  {
+    id: 5,
+    name: "Жолт фустан со точки",
+    color: "Жолта со бели точки",
+    price: 1299,
+    badge: null,
+    image: "images/dress-5.png",
+    description: "Винтиџ летна естетика — жолт фустан со точки, полна здолниште и светол изглед.",
+    sizes: ["S", "M", "L", "XL"]
   }
 ];
 
-let cart = JSON.parse(localStorage.getItem('gk-cart')) || [];
-let activeSwiper = null;
-const cardSwipers = [];
-
 const $ = (sel, ctx = document) => ctx.querySelector(sel);
-const $$ = (sel, ctx = document) => ctx.querySelectorAll(sel);
+const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 
-class ProductSwiper {
-  constructor(container, images, options = {}) {
-    this.container = container;
-    this.images = images;
-    this.current = 0;
-    this.interval = options.interval || 3500;
-    this.timer = null;
-    this.progressTimer = null;
-    this.progress = 0;
-    this.paused = false;
+let activeProduct = null;
+let selectedSize = "M";
 
-    this.track = $('.swiper-track', container);
-    this.progressBar = $('.swiper-progress-bar', container);
-    this.counter = $('.swiper-counter', container);
-    this.dotsContainer = $('.swiper-dots', container);
-    this.thumbs = $$('.gallery-thumb');
+function formatPrice(n) {
+  return new Intl.NumberFormat("mk-MK").format(n) + " МКД";
+}
 
-    this.buildSlides();
-    this.buildDots();
-    this.bindEvents();
-    this.goTo(0);
-    this.start();
-  }
+function waLink(text) {
+  return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`;
+}
 
-  buildSlides() {
-    this.track.innerHTML = this.images.map((src, i) => `
-      <div class="swiper-slide ${i === 0 ? 'active' : ''}" data-index="${i}">
-        <img src="${src}" alt="Product view ${i + 1}">
-      </div>
-    `).join('');
-    this.slides = $$('.swiper-slide', this.track);
-  }
-
-  buildDots() {
-    if (this.images.length <= 1) {
-      this.dotsContainer.style.display = 'none';
-      return;
-    }
-    this.dotsContainer.innerHTML = this.images.map((_, i) => `
-      <button class="swiper-dot ${i === 0 ? 'active' : ''}" data-index="${i}" aria-label="Slide ${i + 1}"></button>
-    `).join('');
-    this.dots = $$('.swiper-dot', this.dotsContainer);
-  }
-
-  bindEvents() {
-    $('.swiper-prev', this.container)?.addEventListener('click', () => {
-      this.prev();
-      this.restart();
-    });
-    $('.swiper-next', this.container)?.addEventListener('click', () => {
-      this.next();
-      this.restart();
-    });
-
-    this.container.addEventListener('mouseenter', () => this.pause());
-    this.container.addEventListener('mouseleave', () => this.resume());
-
-    this.dotsContainer.addEventListener('click', (e) => {
-      const dot = e.target.closest('.swiper-dot');
-      if (dot) {
-        this.goTo(parseInt(dot.dataset.index));
-        this.restart();
-      }
-    });
-
-    this.thumbs.forEach((thumb, i) => {
-      thumb.addEventListener('click', () => {
-        this.goTo(i);
-        this.restart();
-      });
-    });
-  }
-
-  goTo(index) {
-    this.current = index;
-    this.slides.forEach((s, i) => s.classList.toggle('active', i === index));
-    this.dots?.forEach((d, i) => d.classList.toggle('active', i === index));
-    this.thumbs.forEach((t, i) => t.classList.toggle('active', i === index));
-    if (this.counter) {
-      this.counter.textContent = `${index + 1} / ${this.images.length}`;
-    }
-    this.progress = 0;
-    this.updateProgress();
-  }
-
-  next() {
-    this.goTo((this.current + 1) % this.images.length);
-  }
-
-  prev() {
-    this.goTo((this.current - 1 + this.images.length) % this.images.length);
-  }
-
-  start() {
-    if (this.images.length <= 1) return;
-    this.stop();
-    this.timer = setInterval(() => this.next(), this.interval);
-    this.progressTimer = setInterval(() => {
-      if (!this.paused) {
-        this.progress += 100 / (this.interval / 50);
-        this.updateProgress();
-      }
-    }, 50);
-  }
-
-  stop() {
-    clearInterval(this.timer);
-    clearInterval(this.progressTimer);
-    this.timer = null;
-    this.progressTimer = null;
-  }
-
-  restart() {
-    this.stop();
-    this.progress = 0;
-    this.updateProgress();
-    this.start();
-  }
-
-  pause() {
-    this.paused = true;
-  }
-
-  resume() {
-    this.paused = false;
-  }
-
-  updateProgress() {
-    if (this.progressBar) {
-      this.progressBar.style.width = `${Math.min(this.progress, 100)}%`;
-      if (this.progress >= 100) this.progress = 0;
-    }
-  }
-
-  destroy() {
-    this.stop();
+function getCart() {
+  try {
+    return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+  } catch {
+    return [];
   }
 }
 
-class CardSwiper {
-  constructor(card, images) {
-    this.card = card;
-    this.images = images;
-    this.current = 0;
-    this.timer = null;
-    this.wrap = $('.product-image-wrap', card);
-
-    this.build();
-    this.start();
-  }
-
-  build() {
-    const existing = this.wrap.querySelectorAll('img, .card-swiper');
-    existing.forEach(el => el.remove());
-
-    const swiper = document.createElement('div');
-    swiper.className = 'card-swiper';
-    swiper.innerHTML = `
-      ${this.images.map((src, i) => `
-        <div class="card-swiper-slide ${i === 0 ? 'active' : ''}">
-          <img src="${src}" alt="" loading="lazy">
-        </div>
-      `).join('')}
-      <div class="card-swiper-dots">
-        ${this.images.map((_, i) => `<span class="card-swiper-dot ${i === 0 ? 'active' : ''}"></span>`).join('')}
-      </div>
-    `;
-    this.wrap.insertBefore(swiper, this.wrap.firstChild);
-    this.slides = $$('.card-swiper-slide', swiper);
-    this.dots = $$('.card-swiper-dot', swiper);
-
-    this.card.addEventListener('mouseenter', () => this.stop());
-    this.card.addEventListener('mouseleave', () => this.start());
-  }
-
-  goTo(index) {
-    this.current = index;
-    this.slides.forEach((s, i) => s.classList.toggle('active', i === index));
-    this.dots.forEach((d, i) => d.classList.toggle('active', i === index));
-  }
-
-  next() {
-    this.goTo((this.current + 1) % this.images.length);
-  }
-
-  start() {
-    if (this.images.length <= 1) return;
-    this.stop();
-    this.timer = setInterval(() => this.next(), 3000);
-  }
-
-  stop() {
-    clearInterval(this.timer);
-  }
-
-  destroy() {
-    this.stop();
-  }
+function saveCart(items) {
+  localStorage.setItem(CART_KEY, JSON.stringify(items));
+  updateCartUI();
 }
 
-function saveCart() {
-  localStorage.setItem('gk-cart', JSON.stringify(cart));
+function cartCount(items = getCart()) {
+  return items.reduce((sum, i) => sum + i.qty, 0);
 }
 
-function formatPrice(amount) {
-  return '€' + amount.toFixed(2);
+function cartTotal(items = getCart()) {
+  return items.reduce((sum, i) => sum + i.price * i.qty, 0);
 }
 
-function showToast(message) {
-  const toast = $('#toast');
-  toast.textContent = message;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2500);
-}
-
-function updateCartCount() {
-  const count = cart.reduce((sum, item) => sum + item.qty, 0);
-  const el = $('#cartCount');
-  el.textContent = count;
-  el.classList.toggle('visible', count > 0);
-}
-
-function getProductImages(product) {
-  const images = [product.image];
-  if (product.imageAlt) images.push(product.imageAlt);
-  return images;
+function showToast(msg) {
+  const el = $("#toast");
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add("is-on");
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => el.classList.remove("is-on"), 2200);
 }
 
 function renderProducts() {
-  cardSwipers.forEach(s => s.destroy());
-  cardSwipers.length = 0;
+  const grid = $("#productGrid");
+  if (!grid) return;
 
-  const grid = $('#productGrid');
-  grid.innerHTML = products.map(p => {
-    const images = getProductImages(p);
-    const hasAlt = images.length > 1;
-
-    return `
-      <article class="product-card reveal" data-id="${p.id}">
-        <div class="product-image-wrap">
-          ${hasAlt ? '' : `<img class="primary" src="${p.image}" alt="${p.name}" loading="lazy">`}
-          ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
-          <div class="product-card-overlay">
-            <span class="view-btn">View Details</span>
-          </div>
+  grid.innerHTML = products.map((p, i) => `
+    <article class="product-card" data-id="${p.id}" style="transition-delay:${i * 80}ms">
+      <div class="product-media">
+        <img src="${p.image}" alt="${p.name}" loading="lazy">
+        ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ""}
+      </div>
+      <div class="product-info">
+        <h3>${p.name}</h3>
+        <p class="product-color">${p.color}</p>
+        <div class="product-footer">
+          <span class="product-price">${formatPrice(p.price)}</span>
+          <span class="product-view">Детали →</span>
         </div>
-        <div class="product-info">
-          <h3 class="product-name">${p.name}</h3>
-          <p class="product-color">${p.color}</p>
-          <div class="product-footer">
-            <span class="product-price">${formatPrice(p.price)}</span>
-            <button class="quick-add" data-id="${p.id}">Quick Add</button>
-          </div>
-        </div>
-      </article>
-    `;
-  }).join('');
+      </div>
+    </article>
+  `).join("");
 
-  $$('.product-card').forEach(card => {
-    const id = parseInt(card.dataset.id);
-    const product = products.find(p => p.id === id);
-    const images = getProductImages(product);
-    if (images.length > 1) {
-      cardSwipers.push(new CardSwiper(card, images));
-    }
+  $$(".product-card", grid).forEach((card) => {
+    card.addEventListener("click", () => openProduct(Number(card.dataset.id)));
   });
 
-  grid.addEventListener('click', (e) => {
-    const quickAdd = e.target.closest('.quick-add');
-    if (quickAdd) {
-      e.stopPropagation();
-      openModal(parseInt(quickAdd.dataset.id));
-      return;
-    }
-    const card = e.target.closest('.product-card');
-    if (card) openModal(parseInt(card.dataset.id));
-  });
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        e.target.classList.add("is-in");
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
 
-  initReveal();
+  $$(".product-card", grid).forEach((c) => io.observe(c));
 }
 
-function openModal(id) {
-  const product = products.find(p => p.id === id);
-  if (!product) return;
+function openProduct(id) {
+  const p = products.find((x) => x.id === id);
+  if (!p) return;
+  activeProduct = p;
+  selectedSize = p.sizes.includes("M") ? "M" : p.sizes[0];
 
-  if (activeSwiper) {
-    activeSwiper.destroy();
-    activeSwiper = null;
-  }
+  $("#modalImage").src = p.image;
+  $("#modalImage").alt = p.name;
+  $("#modalTitle").textContent = p.name;
+  $("#modalDesc").textContent = p.description;
+  $("#modalPrice").textContent = formatPrice(p.price);
 
-  const images = getProductImages(product);
-  const hasMultiple = images.length > 1;
+  const sizeRow = $("#sizeRow");
+  sizeRow.innerHTML = p.sizes.map((s) =>
+    `<button type="button" class="size-btn${s === selectedSize ? " is-active" : ""}" data-size="${s}">${s}</button>`
+  ).join("");
 
-  $('#modalBody').innerHTML = `
-    <div class="modal-product">
-      <div class="modal-gallery">
-        <div class="product-swiper" id="productSwiper">
-          <div class="swiper-track"></div>
-          ${hasMultiple ? `
-            <button class="swiper-nav swiper-prev" aria-label="Previous">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
-            </button>
-            <button class="swiper-nav swiper-next" aria-label="Next">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-            </button>
-            <div class="swiper-counter">1 / ${images.length}</div>
-            <div class="swiper-dots"></div>
-            <div class="swiper-progress"><div class="swiper-progress-bar"></div></div>
-          ` : ''}
-        </div>
-        ${hasMultiple ? `
-          <div class="gallery-thumbs">
-            ${images.map((img, i) => `
-              <img class="gallery-thumb ${i === 0 ? 'active' : ''}" src="${img}" alt="View ${i + 1}" data-index="${i}">
-            `).join('')}
-          </div>
-        ` : ''}
-      </div>
-      <div class="modal-details">
-        <h2>${product.name}</h2>
-        <p class="product-color">${product.color}</p>
-        <p class="modal-price">${formatPrice(product.price)}</p>
-        <p class="modal-desc">${product.description}</p>
-        <div class="size-selector">
-          <label>Select Size</label>
-          <div class="size-options" id="sizeOptions">
-            ${product.sizes.map((s, i) => `
-              <button class="size-option ${i === 1 ? 'selected' : ''}" data-size="${s}">${s}</button>
-            `).join('')}
-          </div>
-        </div>
-        <button class="btn btn-primary btn-full" id="addToCartBtn" data-id="${product.id}">Add to Bag</button>
-      </div>
-    </div>
-  `;
-
-  activeSwiper = new ProductSwiper($('#productSwiper'), images);
-
-  $$('.size-option').forEach(btn => {
-    btn.addEventListener('click', () => {
-      $$('.size-option').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
+  $$(".size-btn", sizeRow).forEach((btn) => {
+    btn.addEventListener("click", () => {
+      selectedSize = btn.dataset.size;
+      $$(".size-btn", sizeRow).forEach((b) => b.classList.toggle("is-active", b === btn));
+      updateModalWa();
     });
   });
 
-  $('#addToCartBtn').addEventListener('click', () => {
-    const size = $('.size-option.selected')?.dataset.size || product.sizes[0];
-    addToCart(product.id, size);
-    closeModal();
-    openCart();
-  });
+  updateModalWa();
+  const modal = $("#productModal");
+  modal.hidden = false;
+  document.body.classList.add("modal-open");
+}
 
-  $('#productModal').classList.add('open');
-  document.body.style.overflow = 'hidden';
+function updateModalWa() {
+  if (!activeProduct) return;
+  const text = `Здраво! Сакам да го нарачам:\n• ${activeProduct.name}\n• Големина: ${selectedSize}\n• Цена: ${formatPrice(activeProduct.price)}`;
+  $("#waOrderBtn").href = waLink(text);
 }
 
 function closeModal() {
-  if (activeSwiper) {
-    activeSwiper.destroy();
-    activeSwiper = null;
-  }
-  $('#productModal').classList.remove('open');
-  document.body.style.overflow = '';
+  $("#productModal").hidden = true;
+  document.body.classList.remove("modal-open");
+  activeProduct = null;
 }
 
-function addToCart(productId, size) {
-  const product = products.find(p => p.id === productId);
-  if (!product) return;
-
-  const existing = cart.find(item => item.id === productId && item.size === size);
+function addToCart() {
+  if (!activeProduct) return;
+  const items = getCart();
+  const key = `${activeProduct.id}-${selectedSize}`;
+  const existing = items.find((i) => i.key === key);
   if (existing) {
-    existing.qty++;
+    existing.qty += 1;
   } else {
-    cart.push({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.image,
-      size,
+    items.push({
+      key,
+      id: activeProduct.id,
+      name: activeProduct.name,
+      size: selectedSize,
+      price: activeProduct.price,
+      image: activeProduct.image,
       qty: 1
     });
   }
-
-  saveCart();
-  updateCartCount();
-  renderCart();
-  showToast(`${product.name} added to bag`);
+  saveCart(items);
+  showToast("Додадено во кошничка");
 }
 
-function removeFromCart(index) {
-  cart.splice(index, 1);
-  saveCart();
-  updateCartCount();
-  renderCart();
-}
-
-function updateQty(index, delta) {
-  cart[index].qty += delta;
-  if (cart[index].qty <= 0) {
-    removeFromCart(index);
-  } else {
-    saveCart();
-    updateCartCount();
-    renderCart();
+function updateCartUI() {
+  const items = getCart();
+  const count = cartCount(items);
+  const countEl = $("#cartCount");
+  if (countEl) {
+    countEl.textContent = String(count);
+    countEl.classList.toggle("is-on", count > 0);
   }
-}
 
-function renderCart() {
-  const container = $('#cartItems');
-  const footer = $('#cartFooter');
+  const container = $("#cartItems");
+  const footer = $("#cartFooter");
+  if (!container || !footer) return;
 
-  if (cart.length === 0) {
-    container.innerHTML = '<p class="cart-empty">Your bag is empty</p>';
-    footer.style.display = 'none';
+  if (!items.length) {
+    container.innerHTML = '<p class="cart-empty">Кошничката е празна.</p>';
+    footer.style.display = "none";
     return;
   }
 
-  footer.style.display = 'block';
-  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-  $('#cartTotal').textContent = formatPrice(total);
-
-  container.innerHTML = cart.map((item, i) => `
-    <div class="cart-item">
-      <img src="${item.image}" alt="${item.name}">
-      <div class="cart-item-info">
-        <p class="cart-item-name">${item.name}</p>
-        <p class="cart-item-meta">Size: ${item.size}</p>
-        <p class="cart-item-price">${formatPrice(item.price * item.qty)}</p>
-        <div class="cart-item-qty">
-          <button class="qty-btn" data-index="${i}" data-delta="-1">−</button>
-          <span>${item.qty}</span>
-          <button class="qty-btn" data-index="${i}" data-delta="1">+</button>
-        </div>
-        <button class="cart-item-remove" data-index="${i}">Remove</button>
+  footer.style.display = "block";
+  container.innerHTML = items.map((item) => `
+    <div class="cart-item" data-key="${item.key}">
+      <img src="${item.image}" alt="">
+      <div>
+        <h4>${item.name}</h4>
+        <p>Големина ${item.size} · ${item.qty}× ${formatPrice(item.price)}</p>
       </div>
+      <button type="button" class="cart-item-remove" data-remove="${item.key}" aria-label="Отстрани">&times;</button>
     </div>
-  `).join('');
+  `).join("");
 
-  container.querySelectorAll('.qty-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      updateQty(parseInt(btn.dataset.index), parseInt(btn.dataset.delta));
+  $("#cartTotal").textContent = formatPrice(cartTotal(items));
+
+  const lines = items.map((i) => `• ${i.name} (${i.size}) × ${i.qty} — ${formatPrice(i.price * i.qty)}`);
+  const msg = `Здраво! Сакам да нарачам од Maya Online:\n\n${lines.join("\n")}\n\nВкупно: ${formatPrice(cartTotal(items))}`;
+  $("#checkoutWa").href = waLink(msg);
+
+  $$("[data-remove]", container).forEach((btn) => {
+    btn.addEventListener("click", () => {
+      saveCart(getCart().filter((i) => i.key !== btn.dataset.remove));
     });
-  });
-
-  container.querySelectorAll('.cart-item-remove').forEach(btn => {
-    btn.addEventListener('click', () => removeFromCart(parseInt(btn.dataset.index)));
   });
 }
 
 function openCart() {
-  $('#cartDrawer').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  $("#cartDrawer").hidden = false;
+  document.body.classList.add("modal-open");
+  updateCartUI();
 }
 
 function closeCart() {
-  $('#cartDrawer').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function initPreloader() {
-  const preloader = $('#preloader');
-  const progress = $('#preloaderProgress');
-  const site = $('#site');
-  let done = false;
-  let value = 0;
-
-  document.body.classList.add('loading');
-
-  const tick = setInterval(() => {
-    if (value < 88) {
-      value += Math.random() * 12;
-      progress.style.width = Math.min(value, 88) + '%';
-    }
-  }, 120);
-
-  function finish() {
-    if (done) return;
-    done = true;
-    clearInterval(tick);
-    progress.style.width = '100%';
-
-    setTimeout(() => {
-      preloader.classList.add('hidden');
-      site.classList.add('visible');
-      document.body.classList.remove('loading');
-    }, 350);
-  }
-
-  window.addEventListener('load', finish);
-  setTimeout(finish, 3000);
+  $("#cartDrawer").hidden = true;
+  if ($("#productModal").hidden) document.body.classList.remove("modal-open");
 }
 
 function initHeader() {
-  const header = $('#header');
-  window.addEventListener('scroll', () => {
-    header.classList.toggle('scrolled', window.scrollY > 50);
+  const header = $("#header");
+  const onScroll = () => header.classList.toggle("is-scrolled", window.scrollY > 20);
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  const toggle = $("#menuToggle");
+  const mobileNav = $("#mobileNav");
+  toggle?.addEventListener("click", () => {
+    const open = toggle.getAttribute("aria-expanded") === "true";
+    toggle.setAttribute("aria-expanded", String(!open));
+    mobileNav.hidden = open;
   });
-}
 
-function initMobileNav() {
-  const toggle = $('#menuToggle');
-  const nav = $('#nav');
-
-  toggle.addEventListener('click', () => nav.classList.toggle('open'));
-  nav.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', () => nav.classList.remove('open'));
-  });
-}
-
-function initReveal() {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
+  $$("a", mobileNav).forEach((a) => {
+    a.addEventListener("click", () => {
+      toggle.setAttribute("aria-expanded", "false");
+      mobileNav.hidden = true;
     });
-  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-
-  $$('.reveal:not(.visible)').forEach(el => observer.observe(el));
+  });
 }
 
-function initEvents() {
-  $('#cartBtn').addEventListener('click', openCart);
-  $('#cartClose').addEventListener('click', closeCart);
-  $('#cartBackdrop').addEventListener('click', closeCart);
-  $('#modalClose').addEventListener('click', closeModal);
-  $('#modalBackdrop').addEventListener('click', closeModal);
+function init() {
+  const year = $("#year");
+  if (year) year.textContent = String(new Date().getFullYear());
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
+  renderProducts();
+  updateCartUI();
+  initHeader();
+
+  $("#cartBtn")?.addEventListener("click", openCart);
+  $("#addToCartBtn")?.addEventListener("click", addToCart);
+
+  $$("[data-close]").forEach((el) => el.addEventListener("click", closeModal));
+  $$("[data-close-cart]").forEach((el) => el.addEventListener("click", closeCart));
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
       closeModal();
       closeCart();
     }
-    if ($('#productModal').classList.contains('open') && activeSwiper) {
-      if (e.key === 'ArrowLeft') { activeSwiper.prev(); activeSwiper.restart(); }
-      if (e.key === 'ArrowRight') { activeSwiper.next(); activeSwiper.restart(); }
-    }
-  });
-
-  $('#checkoutBtn').addEventListener('click', () => {
-    if (cart.length === 0) return;
-    const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-    const items = cart.map(i => `${i.name} (${i.size}) x${i.qty}`).join('\n');
-    const subject = encodeURIComponent('Order — Lingerie By GK');
-    const body = encodeURIComponent(
-      `Hi, I'd like to place an order:\n\n${items}\n\nTotal: ${formatPrice(total)}\n\nName:\nAddress:\nPhone:`
-    );
-    window.open(`mailto:orders@lingeriebygk.com?subject=${subject}&body=${body}`, '_blank');
-    showToast('Opening email to complete your order');
-  });
-
-  $('#contactForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const name = form.name.value;
-    const email = form.email.value;
-    const message = form.message.value;
-    const subject = encodeURIComponent(`Contact from ${name}`);
-    const body = encodeURIComponent(`${message}\n\n— ${name}\n${email}`);
-    window.open(`mailto:orders@lingeriebygk.com?subject=${subject}&body=${body}`, '_blank');
-    form.reset();
-    showToast('Message sent! We\'ll get back to you soon.');
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  initPreloader();
-  renderProducts();
-  renderCart();
-  updateCartCount();
-  initHeader();
-  initMobileNav();
-  initEvents();
-  initReveal();
-});
+document.addEventListener("DOMContentLoaded", init);
