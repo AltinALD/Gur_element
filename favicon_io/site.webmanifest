@@ -1,19 +1,15 @@
 {
-  "name": "Maya Online",
-  "short_name": "Maya",
+  "name": "Gur Element",
+  "short_name": "Gur Element",
   "icons": [
     {
-      "src": "/favicon_io/android-chrome-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "/favicon_io/android-chrome-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "../favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ],
-  "theme_color": "#111111",
-  "background_color": "#faf9f7",
+  "theme_color": "#0c0c0d",
+  "background_color": "#0c0c0d",
   "display": "standalone"
 }

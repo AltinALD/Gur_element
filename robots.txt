@@ -1,4 +1,2 @@
 User-agent: *
 Allow: /
-
-Sitemap: https://altinald.github.io/Mayaonline_mk/sitemap.xml
